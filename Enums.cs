@@ -4,6 +4,7 @@ namespace DraftPick
 {
     enum Position
     {
+        None,
         FLEX,
         RB,
         WR,
@@ -20,7 +21,7 @@ namespace DraftPick
             {Position.QB, 1},
             {Position.RB, 2},
             {Position.WR, 2},
-            {Position.FLEX, 6},
+            {Position.FLEX, 7},
             {Position.K, 1},
             {Position.DEF, 1},
             {Position.TE, 1}

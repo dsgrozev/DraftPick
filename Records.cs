@@ -9,14 +9,18 @@ namespace DraftPick
         static internal List<Records> Lines = new List<Records>();
         public string PlayerName;
         public Position Position;
+        public string Team;
         public bool IsDrafted;
+        public int Adp;
         public int Tier;
         public double[] Weeks = new double[16];
 
         public Records(
             string playerName,
             Position position,
+            string team,
             bool isDrafted,
+            int adp,
             int tier,
             double week1,
             double week2,
@@ -37,7 +41,9 @@ namespace DraftPick
         {
             PlayerName = playerName ?? throw new ArgumentNullException(nameof(playerName));
             Position = position;
+            Team = team;
             IsDrafted = isDrafted;
+            Adp = adp;
             Tier = tier;
             int i = 0;
             Weeks[i++] = week1;
@@ -58,21 +64,25 @@ namespace DraftPick
             Weeks[i++] = week16;
         }
 
-        internal static void ReadExcel(Workbook xlWorkBook)
+        internal static int ReadExcel(Workbook xlWorkBook)
         {
+            int pick = 0;
             _Worksheet sheet = xlWorkBook.Sheets["Weeks"];
             object[,] range = sheet.UsedRange.Value;
             for (int i = 2; i <= range.GetUpperBound(0); i++)
             {
-                if ((string)range[i, 3] == "x")
+                if ((string)range[i, 4] == "x")
                 {
+                    pick++;
                     continue;
                 }
                 int j = 1;
                 Lines.Add(new Records(
                     (string)range[i, j++],
                     (Position)Enum.Parse(typeof(Position), (string)range[i, j++]),
+                    (string)range[i, j++],
                     ((string)range[i, j++]) == "m",
+                    Convert.ToInt32(range[i, j++]),
                     Convert.ToInt32(range[i, j++]),
                     Convert.ToDouble(range[i, j++]),
                     Convert.ToDouble(range[i, j++]),
@@ -92,6 +102,7 @@ namespace DraftPick
                     Convert.ToDouble(range[i, j++])
                 ));
             }
+            return pick;
         }
     }
 }
